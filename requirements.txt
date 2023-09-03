@@ -1,0 +1,7 @@
+Flask
+gunicorn
+SQLAlchemy>=1.4.46,<=1.4.46
+Flask-SQLAlchemy =3.0.5
+pymysql
+python-dotenv 
+Flask-Script

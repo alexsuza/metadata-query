@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Listings</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Job Listings</h1>
+        <form action="/filter" method="post" class="mb-3">
+            <div class="form-group">
+                <label for="date_filter">Filter by Date:</label>
+                <select name="date_filter" id="date_filter" class="form-control">
+                    <option value="">All Dates</option>
+                    {% for job in jobs %}
+                        {% if job.date_posted %}
+                            <option value="{{ job.date_posted }}">{{ job.date_posted }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Apply Filter</button>
+        </form>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Location</th>
+                    <th>Salary</th>
+                    <th>Currency</th>
+                    <th>Responsibilities</th>
+                    <th>Requirements</th>
+                    <th>Date Posted</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                    <tr>
+                        <td>{{ job.title }}</td>
+                        <td>{{ job.location }}</td>
+                        <td>{{ job.salary }}</td>
+                        <td>{{ job.currency }}</td>
+                        <td>{{ job.responsibilities }}</td>
+                        <td>{{ job.requirements }}</td>
+                        <td>{{ job.date_posted }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
