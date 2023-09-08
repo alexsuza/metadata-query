@@ -8,10 +8,11 @@ load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_STRING')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-class Job(db.Model):  # Keep the class name as "Job"
+class Job(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250), nullable=False)
     location = db.Column(db.String(250), nullable=False)
@@ -23,16 +24,11 @@ class Job(db.Model):  # Keep the class name as "Job"
 
 @app.route('/')
 def index():
-    jobs = Job.query.all()  # Use "Job" to query the jobs table
-    return render_template('index.html', jobs=jobs)
-
-@app.route('/filter', methods=['POST'])
-def filter_jobs():
-    selected_date = request.form.get('date_filter')
-    if selected_date:
-        jobs = Job.query.filter_by(date_posted=selected_date).all()  # Use "Job" to query the jobs table
+    title_filter = request.args.get('title')
+    if title_filter:
+        jobs = Job.query.filter(Job.title.ilike(f"%{title_filter}%")).all()
     else:
-        jobs = Job.query.all()  # Use "Job" to query the jobs table
+        jobs = Job.query.all()
     return render_template('index.html', jobs=jobs)
 
 if __name__ == '__main__':
