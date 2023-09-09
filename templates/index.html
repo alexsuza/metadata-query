@@ -1,52 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Job Listings</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>DBInfo Service</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1>Job Listings</h1>
-        <form action="/filter" method="post" class="mb-3">
-            <div class="form-group">
-                <label for="date_filter">Filter by Date:</label>
-                <select name="date_filter" id="date_filter" class="form-control">
-                    <option value="">All Dates</option>
-                    {% for job in jobs %}
-                        {% if job.date_posted %}
-                            <option value="{{ job.date_posted }}">{{ job.date_posted }}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Apply Filter</button>
-        </form>
-        <table class="table table-bordered">
-            <thead>
+    <h1>DBInfo Service</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PROD_ID</th>
+                <th>PARENT_PROD_ID</th>
+                <th>JNLITM_ID</th>
+                <th>TASK_ID</th>
+                <th>STRINGOFORIGIN</th>
+                <th>PRODUCTSTART_DTM</th>
+                <th>PRODUCTEND_DTM</th>
+                <th>GROUNDSTATION</th>
+                <!-- ... Add other column headers here ... -->
+                <th>UPDATED_DTM</th>
+                <th>EM_DETECT_ID</th>
+                <th>PRIORITY</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
                 <tr>
-                    <th>Title</th>
-                    <th>Location</th>
-                    <th>Salary</th>
-                    <th>Currency</th>
-                    <th>Responsibilities</th>
-                    <th>Requirements</th>
-                    <th>Date Posted</th>
+                    <td>{{ product.PROD_ID }}</td>
+                    <td>{{ product.PARENT_PROD_ID }}</td>
+                    <td>{{ product.JNLITM_ID }}</td>
+                    <td>{{ product.TASK_ID }}</td>
+                    <td>{{ product.STRINGOFORIGIN }}</td>
+                    <td>{{ product.PRODUCTSTART_DTM }}</td>
+                    <td>{{ product.PRODUCTEND_DTM }}</td>
+                    <td>{{ product.GROUNDSTATION }}</td>
+                    <!-- ... Add other column data here ... -->
+                    <td>{{ product.UPDATED_DTM }}</td>
+                    <td>{{ product.EM_DETECT_ID }}</td>
+                    <td>{{ product.PRIORITY }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for job in jobs %}
-                    <tr>
-                        <td>{{ job.title }}</td>
-                        <td>{{ job.location }}</td>
-                        <td>{{ job.salary }}</td>
-                        <td>{{ job.currency }}</td>
-                        <td>{{ job.responsibilities }}</td>
-                        <td>{{ job.requirements }}</td>
-                        <td>{{ job.date_posted }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
