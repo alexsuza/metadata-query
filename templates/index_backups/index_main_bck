@@ -3,62 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <title>DBInfo Service</title>
-     
+    
     <style>
+        /* Remove all borders */
         table, th, td {
-            border: 1px solid black;
+            border: none;
+        }
+
+        /* Add padding to cells for spacing */
+        th, td {
+            padding: 10px;
         }
     </style>
 </head>
 <body>
     <h1>DBInfo Service</h1>
     
-    <p>
-        <tbody>
-            {% for product in products %}
-                {% if loop.index == 1%}
-                    <tr>
-                        <h3>PRODUCTSTART_DTM : <small>{{ product.PRODUCTSTART_DTM}}</small></h3>         
-                    </tr>
-                {% endif %}
-            {% endfor %}
+    {% set found_first_product = false %}
+    {% for product in products %}
+        {% if loop.index == 1 and not found_first_product %}
+            <h3>PRODUCTSTART_DTM: <small>{{ product.PRODUCTSTART_DTM }}</small></h3>
+            <h3>PRODUCTEND_DTM: <small>{{ product.PRODUCTEND_DTM }}</small></h3>
+            {% set found_first_product = true %}
+        {% endif %}
+    {% endfor %}
     
-        </tbody>
-    </P>
-     <h3>Product Metadata (count = <small>{{ products|length }}</small>)</h3>   
+
+    <h3>Product Metadata (count = <small>{{ products|length }}</small>)</h3>   
 
     <table>
         <thead>
             <tr>
                 <th>PROD_ID</th>
+                <th>TASK_ID</th>
+                <th>PRIORITY</th>
                 <th>PARENT_PROD_ID</th>
                 <th>JNLITM_ID</th>
-                <th>TASK_ID</th>
                 <th>STRINGOFORIGIN</th>
                 <th>PRODUCTSTART_DTM</th>
                 <th>PRODUCTEND_DTM</th>
                 <th>GROUNDSTATION</th>
-                <!-- ... Add other column headers here ... -->
                 <th>UPDATED_DTM</th>
                 <th>EM_DETECT_ID</th>
-                <th>PRIORITY</th>
+               
             </tr>
         </thead>
         <tbody>
             {% for product in products %}
                 <tr>
                     <td>{{ product.PROD_ID }}</td>
+                    <td>{{ product.TASK_ID }}</td>
+                    <td>{{ product.PRIORITY }}</td>
                     <td>{{ product.PARENT_PROD_ID }}</td>
                     <td>{{ product.JNLITM_ID }}</td>
-                    <td>{{ product.TASK_ID }}</td>
                     <td>{{ product.STRINGOFORIGIN }}</td>
                     <td>{{ product.PRODUCTSTART_DTM }}</td>
                     <td>{{ product.PRODUCTEND_DTM }}</td>
                     <td>{{ product.GROUNDSTATION }}</td>
-                    <!-- ... Add other column data here ... -->
                     <td>{{ product.UPDATED_DTM }}</td>
                     <td>{{ product.EM_DETECT_ID }}</td>
-                    <td>{{ product.PRIORITY }}</td>
+                
                 </tr>
             {% endfor %}
         </tbody>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DBInfo Service</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .custom-container {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5 custom-container">
+        <h1>DBInfo Service</h1>
+
+        {% set found_first_product = false %}
+        {% for product in products %}
+            {% if loop.index == 1 and not found_first_product %}
+                <div class="alert alert-primary" role="alert">
+                    <strong>PRODUCTSTART_DTM:</strong> {{ product.PRODUCTSTART_DTM }}
+                </div>
+                <div class="alert alert-primary" role="alert">
+                    <strong>PRODUCTEND_DTM:</strong> {{ product.PRODUCTEND_DTM }}
+                </div>
+                {% set found_first_product = true %}
+            {% endif %}
+        {% endfor %}
+
+        <h3>Product Metadata (count = <small>{{ products|length }}</small>)</h3>
+
+        <div class="table-responsive">
+            <table class="table table-hover text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">PROD_ID</th>
+                        <th scope="col">TASK_ID</th>
+                        <th scope="col">PRIORITY</th>
+                        <th scope="col">PARENT_PROD_ID</th>
+                        <th scope="col">JNLITM_ID</th>
+                        <th scope="col">STRINGOFORIGIN</th>
+                        <th scope="col">PRODUCTSTART_DTM</th>
+                        <th scope="col">PRODUCTEND_DTM</th>
+                        <th scope="col">GROUNDSTATION</th>
+                        <th scope="col">UPDATED_DTM</th>
+                        <th scope="col">EM_DETECT_ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>{{ product.PROD_ID }}</td>
+                            <td>{{ product.TASK_ID }}</td>
+                            <td>{{ product.PRIORITY }}</td>
+                            <td>{{ product.PARENT_PROD_ID }}</td>
+                            <td>{{ product.JNLITM_ID }}</td>
+                            <td>{{ product.STRINGOFORIGIN }}</td>
+                            <td>{{ product.PRODUCTSTART_DTM }}</td>
+                            <td>{{ product.PRODUCTEND_DTM }}</td>
+                            <td>{{ product.GROUNDSTATION }}</td>
+                            <td>{{ product.UPDATED_DTM }}</td>
+                            <td>{{ product.EM_DETECT_ID }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
