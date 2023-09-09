@@ -3,42 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>DBInfo Service</title>
+     
     <style>
         table, th, td {
             border: 1px solid black;
         }
     </style>
-    <script>
-        function exportTableToCSV() {
-            let csv = [];
-            let rows = document.querySelectorAll("table tr");
-            
-            for (let i = 0; i < rows.length; i++) {
-                let row = [], cols = rows[i].querySelectorAll("td, th");
-                
-                for (let j = 0; j < cols.length; j++) 
-                    row.push(cols[j].innerText);
-                
-                csv.push(row.join(","));        
-            }
-
-            let csvString = csv.join("\r\n");
-            let csvBlob = new Blob([csvString], { type: "text/csv" });
-            let csvUrl = URL.createObjectURL(csvBlob);
-            let hiddenElement = document.createElement('a');
-            
-            hiddenElement.href = csvUrl;
-            hiddenElement.target = '_blank';
-            hiddenElement.download = 'products.csv';
-            hiddenElement.click();
-        }
-    </script>
 </head>
 <body>
-    <button onclick="exportTableToCSV()">Export to CSV</button> <!-- CSV Export button -->
     <h1>DBInfo Service</h1>
-    
-    <!-- Your existing HTML content -->
     
     <p>
         <tbody>
@@ -49,10 +22,11 @@
                     </tr>
                 {% endif %}
             {% endfor %}
+    
         </tbody>
-    </p>
+    </P>
+     <h3>Product Metadata (count = <small>{{ products|length }}</small>)</h3>   
 
-    <h3>Product Metadata (count = <small>{{ products|length }}</small>)</h3>
     <table>
         <thead>
             <tr>
