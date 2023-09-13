@@ -19,3 +19,8 @@ CMD [ "python3", "-m", "flask", "run", "--host=0.0.0.0" ]
 # RUN$ docker build -t dbinfo .
 # docker run -d -p 5000:5000 dbinfo
 # (to store build log) RUN$ docker build -t dbinfo . > build.log 2>&1
+
+# Tag and Push image to hub ()
+# docker tag dbinfo:latest brainchild87/metademo:latest
+# docker push brainchild87/metademo:latest
+# docker pull brainchild87/metademo:latest
