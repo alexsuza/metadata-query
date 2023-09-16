@@ -17,6 +17,9 @@
     </style>
 </head>
 <body>
+    <!-- Add Export to CSV button above the title -->
+    <br><br><br>
+    <button id="exportButton">Export to CSV</button>
     <h1>DBInfo Service</h1>
     
     {% set found_first_product = false %}
@@ -31,7 +34,7 @@
 
     <h3>Product Metadata (count = <small>{{ products|length }}</small>)</h3>   
 
-    <table>
+    <table id="dataTable">
         <thead>
             <tr>
                 <th>PROD_ID</th>
@@ -45,7 +48,6 @@
                 <th>GROUNDSTATION</th>
                 <th>UPDATED_DTM</th>
                 <th>EM_DETECT_ID</th>
-               
             </tr>
         </thead>
         <tbody>
@@ -62,10 +64,45 @@
                     <td>{{ product.GROUNDSTATION }}</td>
                     <td>{{ product.UPDATED_DTM }}</td>
                     <td>{{ product.EM_DETECT_ID }}</td>
-                
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <script>
+        // Function to export the table data to CSV
+        function exportToCSV() {
+            const table = document.getElementById("dataTable");
+            const rows = table.querySelectorAll("tr");
+            const csvData = [];
+            
+            // Iterate through rows and columns to build CSV data
+            rows.forEach((row) => {
+                const rowData = [];
+                const cols = row.querySelectorAll("td, th");
+                cols.forEach((col) => {
+                    rowData.push(col.innerText);
+                });
+                csvData.push(rowData.join(","));
+            });
+
+            // Create a CSV blob
+            const csvContent = csvData.join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv" });
+            const url = window.URL.createObjectURL(blob);
+
+            // Create a download link and trigger the click event
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "table_data.csv";
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Add a click event listener to the Export button
+        document.getElementById("exportButton").addEventListener("click", exportToCSV);
+    </script>
 </body>
 </html>

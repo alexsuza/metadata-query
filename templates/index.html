@@ -10,13 +10,42 @@
             border: none;
         }
 
-        /* Add padding to cells for spacing */
+        /* Add spacing before the button */
+        #exportButton {
+            margin-top: 20px;
+        }
+
+        /* Style the table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
         th, td {
             padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Add some spacing after the title */
+        h1 {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
+    <!-- Add 3 lines of spacing before the button -->
+    <br><br><br>
+    <!-- Add Export to CSV button above the title -->
+    <button id="exportButton">Export to CSV</button>
     <h1>DBInfo Service</h1>
     
     {% set found_first_product = false %}
@@ -31,41 +60,139 @@
 
     <h3>Product Metadata (count = <small>{{ products|length }}</small>)</h3>   
 
-    <table>
+    <table id="dataTable">
         <thead>
             <tr>
                 <th>PROD_ID</th>
-                <th>TASK_ID</th>
-                <th>PRIORITY</th>
                 <th>PARENT_PROD_ID</th>
                 <th>JNLITM_ID</th>
+                <th>TASK_ID</th>
                 <th>STRINGOFORIGIN</th>
                 <th>PRODUCTSTART_DTM</th>
                 <th>PRODUCTEND_DTM</th>
                 <th>GROUNDSTATION</th>
+                <th>CLASSMARK</th>
+                <th>CONTROLMARK</th>
+                <th>PRODTYPE</th>
+                <th>TFRITM_ID</th>
+                <th>FILESIZE</th>
+                <th>CLASSIFICATION</th>
+                <th>TAGS</th>
+                <th>FILENAME</th>
+                <th>FILEPATH</th>
+                <th>PAYLOADNUMBER</th>
+                <th>PAYLOADENV</th>
+                <th>CORRELATED</th>
+                <th>CURRENT_STRINGLOC</th>
+                <th>ORIGINATING_STRINGLOC</th>
+                <th>ORIGINATING_DATASOURCE</th>
+                <th>CURRENT_DATASOURCE</th>
+                <th>ON_DISK</th>
+                <th>ON_TAPE</th>
+                <th>CURRENT_ENTITYLOC</th>
+                <th>DEMO_PRODUCT_FLAG</th>
+                <th>DO_NOT_DELETE_FLAG</th>
+                <th>NOTETEXT</th>
+                <th>PRODUCT_INSERT_DTM</th>
+                <th>PRODUCT_SUBTYPE</th>
+                <th>STORED_FROM</th>
+                <th>TASKNAME_FROMFILE</th>
+                <th>COMPRESSION_RATIO</th>
+                <th>OUTSTANDING_AUTOXFER</th>
+                <th>AUTOXFEREND_DTM</th>
+                <th>SWVERSION</th>
+                <th>PAYLOADID</th>
+                <th>ORIGINATING_FILENAME</th>
                 <th>UPDATED_DTM</th>
                 <th>EM_DETECT_ID</th>
-               
+                <th>PRIORITY</th>
             </tr>
         </thead>
         <tbody>
             {% for product in products %}
                 <tr>
                     <td>{{ product.PROD_ID }}</td>
-                    <td>{{ product.TASK_ID }}</td>
-                    <td>{{ product.PRIORITY }}</td>
                     <td>{{ product.PARENT_PROD_ID }}</td>
                     <td>{{ product.JNLITM_ID }}</td>
+                    <td>{{ product.TASK_ID }}</td>
                     <td>{{ product.STRINGOFORIGIN }}</td>
                     <td>{{ product.PRODUCTSTART_DTM }}</td>
                     <td>{{ product.PRODUCTEND_DTM }}</td>
                     <td>{{ product.GROUNDSTATION }}</td>
+                    <td>{{ product.CLASSMARK }}</td>
+                    <td>{{ product.CONTROLMARK }}</td>
+                    <td>{{ product.PRODTYPE }}</td>
+                    <td>{{ product.TFRITM_ID }}</td>
+                    <td>{{ product.FILESIZE }}</td>
+                    <td>{{ product.CLASSIFICATION }}</td>
+                    <td>{{ product.TAGS }}</td>
+                    <td>{{ product.FILENAME }}</td>
+                    <td>{{ product.FILEPATH }}</td>
+                    <td>{{ product.PAYLOADNUMBER }}</td>
+                    <td>{{ product.PAYLOADENV }}</td>
+                    <td>{{ product.CORRELATED }}</td>
+                    <td>{{ product.CURRENT_STRINGLOC }}</td>
+                    <td>{{ product.ORIGINATING_STRINGLOC }}</td>
+                    <td>{{ product.ORIGINATING_DATASOURCE }}</td>
+                    <td>{{ product.CURRENT_DATASOURCE }}</td>
+                    <td>{{ product.ON_DISK }}</td>
+                    <td>{{ product.ON_TAPE }}</td>
+                    <td>{{ product.CURRENT_ENTITYLOC }}</td>
+                    <td>{{ product.DEMO_PRODUCT_FLAG }}</td>
+                    <td>{{ product.DO_NOT_DELETE_FLAG }}</td>
+                    <td>{{ product.NOTETEXT }}</td>
+                    <td>{{ product.PRODUCT_INSERT_DTM }}</td>
+                    <td>{{ product.PRODUCT_SUBTYPE }}</td>
+                    <td>{{ product.STORED_FROM }}</td>
+                    <td>{{ product.TASKNAME_FROMFILE }}</td>
+                    <td>{{ product.COMPRESSION_RATIO }}</td>
+                    <td>{{ product.OUTSTANDING_AUTOXFER }}</td>
+                    <td>{{ product.AUTOXFEREND_DTM }}</td>
+                    <td>{{ product.SWVERSION }}</td>
+                    <td>{{ product.PAYLOADID }}</td>
+                    <td>{{ product.ORIGINATING_FILENAME }}</td>
                     <td>{{ product.UPDATED_DTM }}</td>
                     <td>{{ product.EM_DETECT_ID }}</td>
-                
+                    <td>{{ product.PRIORITY }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <script>
+        // Function to export the table data to CSV
+        function exportToCSV() {
+            const table = document.getElementById("dataTable");
+            const rows = table.querySelectorAll("tr");
+            const csvData = [];
+            
+            // Iterate through rows and columns to build CSV data
+            rows.forEach((row) => {
+                const rowData = [];
+                const cols = row.querySelectorAll("td, th");
+                cols.forEach((col) => {
+                    rowData.push(col.innerText);
+                });
+                csvData.push(rowData.join(","));
+            });
+
+            // Create a CSV blob
+            const csvContent = csvData.join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv" });
+            const url = window.URL.createObjectURL(blob);
+
+            // Create a download link and trigger the click event
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "table_data.csv";
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Add a click event listener to the Export button
+        document.getElementById("exportButton").addEventListener("click", exportToCSV);
+    </script>
 </body>
 </html>
