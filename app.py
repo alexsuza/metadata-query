@@ -1,17 +1,13 @@
 import os
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-#from flask_migrate import Migrate
 from datetime import datetime
 from dotenv import load_dotenv
-
 load_dotenv()  # Load environment variables from .env file
 
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:admin123@localhost/metadb'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 #migrate = Migrate(app, db)
@@ -64,8 +60,11 @@ class VProduct(db.Model):
     UPDATED_DTM = db.Column(db.DateTime)
     EM_DETECT_ID = db.Column(db.String(128))
     PRIORITY = db.Column(db.Numeric(38, 0))
+
+
 @app.route('/')
 def index():
+    error_message = None  # Initialize error message as None
     query = db.session.query(VProduct)
     
     # Mapping dictionary
@@ -103,7 +102,13 @@ def index():
                     query = query.filter(getattr(VProduct, column_name) == column_value)
 
     products = query.all()
-    return render_template('index.html', products=products)
+    if not products:
+        error_message = 'There is no value matching your search criteria'
+
+    
+    classification_level = os.environ.get('CLASSIFICATION_LEVEL', 'Unclassified')
+    return render_template('index.html', products=products, error_message=error_message, classification_level=classification_level)
+
 
 
 

@@ -40,13 +40,28 @@
             margin-bottom: 20px;
         }
     </style>
+
+<style>
+    .classification-label {
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+        font-size: 24px;
+    }
+</style>
 </head>
 <body>
+    <br>
+    <div class="classification-label">{{ classification_level }}</div>
     <!-- Add 3 lines of spacing before the button -->
     <br><br><br>
     <!-- Add Export to CSV button above the title -->
     <button id="exportButton">Export to CSV</button>
     <h1>DBInfo Service</h1>
+    {% if error_message %}
+    <p style="color: red; text-align: center;"><strong>{{ error_message }}</strong></p>
+{% endif %}
+
     
     {% set found_first_product = false %}
     {% for product in products %}
