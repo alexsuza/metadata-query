@@ -1,25 +1,26 @@
-# Use RHEL 8 as the base image
-FROM registry.access.redhat.com/ubi8/ubi:latest
+FROM ubuntu
 
-# Install Python 3 and pip
-RUN yum -y update && \
-    yum -y install python38 python38-pip && \
-    yum clean all
+RUN apt update
+RUN apt install python3-pip -y
 
-# Change the working directory
 WORKDIR /app
 
-# Install the Python dependencies from requirements.txt
-# This is moved up here to leverage Docker cache
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt && \
-    pip3 install --no-cache-dir -U python-dotenv==0.15.0
-
-# Copy current directory contents into the container at /app
 COPY . .
 
 # Print directory contents for debugging
 RUN ls -la
 
-# The command to run the application
+RUN pip install -r requirements.txt
+RUN pip3 install -U python-dotenv
+
 CMD [ "python3", "-m", "flask", "run", "--host=0.0.0.0" ]
+
+# To build this file
+# RUN$ docker build -t dbinfo .
+# docker run -d -p 5000:5000 dbinfo
+# (to store build log) RUN$ docker build -t dbinfo . > build.log 2>&1
+
+# Tag and Push image to hub ()
+# docker tag dbinfo:latest brainchild87/metademo:latest
+# docker push brainchild87/metademo:latest
+# docker pull brainchild87/metademo:latest

@@ -1,1 +1,0 @@
-DB_STRING = mysql+pymysql://admin:admin123@metadb.ctspjxav3xyb.us-east-1.rds.amazonaws.com/metadb

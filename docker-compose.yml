@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+      - SQLALCHEMY_DATABASE_URI=mysql+pymysql://root:admin123@db/metadb
+    depends_on:
+      - db
+    networks:
+      - custom_network
+  
+  db:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+      - MYSQL_DATABASE=metadb
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # This line mounts your init.sql to the MySQL container
+    networks:
+      - custom_network
+
+volumes:
+  db_data:
+
+networks:
+  custom_network:

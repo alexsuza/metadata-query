@@ -9,7 +9,9 @@ load_dotenv()  # Load environment variables from .env file
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_STRING')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:admin123@localhost/metadb'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 #migrate = Migrate(app, db)
@@ -62,13 +64,18 @@ class VProduct(db.Model):
     UPDATED_DTM = db.Column(db.DateTime)
     EM_DETECT_ID = db.Column(db.String(128))
     PRIORITY = db.Column(db.Numeric(38, 0))
-
 @app.route('/')
 def index():
     query = db.session.query(VProduct)
     
-    for column_name in VProduct.__table__.columns.keys():
-        column_value = request.args.get(column_name)
+    # Mapping dictionary
+    param_to_column = {
+        'start-time': 'PRODUCTSTART_DTM',
+        'end-time': 'PRODUCTEND_DTM'
+    }
+
+    for param, column_name in param_to_column.items():
+        column_value = request.args.get(param)
         
         if column_value:
             if isinstance(VProduct.__table__.columns[column_name].type, db.DateTime):
@@ -79,7 +86,22 @@ def index():
                     return f"Invalid date format for {column_name}, use 'YYYY-MM-DD HH:MM:SS'"
             else:
                 query = query.filter(getattr(VProduct, column_name) == column_value)
-                
+
+    # Continue to check for direct column-name to param mappings
+    for column_name in VProduct.__table__.columns.keys():
+        if column_name not in param_to_column.values():  # Skip if already processed
+            column_value = request.args.get(column_name)
+
+            if column_value:
+                if isinstance(VProduct.__table__.columns[column_name].type, db.DateTime):
+                    try:
+                        dtm = datetime.strptime(column_value, '%Y-%m-%d %H:%M:%S')
+                        query = query.filter(getattr(VProduct, column_name) == dtm)
+                    except ValueError:
+                        return f"Invalid date format for {column_name}, use 'YYYY-MM-DD HH:MM:SS'"
+                else:
+                    query = query.filter(getattr(VProduct, column_name) == column_value)
+
     products = query.all()
     return render_template('index.html', products=products)
 
