@@ -5,13 +5,18 @@ from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env file
 
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+#--------------------------------- for docker only ---------------------------------------------#
+#app = Flask(__name__)
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#db = SQLAlchemy(app) 
 #migrate = Migrate(app, db)
 
+#------------------------------------ local test -----------------------------------------------#
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_STRING')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 
 class VProduct(db.Model):
@@ -73,6 +78,16 @@ def index():
         'end-time': 'PRODUCTEND_DTM'
     }
 
+    # Valid column names
+    valid_columns = VProduct.__table__.columns.keys()
+
+    # Check for any unexpected parameters
+    all_expected_params = set(list(param_to_column.keys()) + valid_columns)
+    unexpected_params = [p for p in request.args.keys() if p not in all_expected_params]
+    if unexpected_params:
+        return f"You provided an unexpected parameter: {', '.join(unexpected_params)} is not a valid search entry"
+
+    # Check for exact matches and process known parameters
     for param, column_name in param_to_column.items():
         column_value = request.args.get(param)
         
@@ -87,7 +102,7 @@ def index():
                 query = query.filter(getattr(VProduct, column_name) == column_value)
 
     # Continue to check for direct column-name to param mappings
-    for column_name in VProduct.__table__.columns.keys():
+    for column_name in valid_columns:
         if column_name not in param_to_column.values():  # Skip if already processed
             column_value = request.args.get(column_name)
 
@@ -102,15 +117,14 @@ def index():
                     query = query.filter(getattr(VProduct, column_name) == column_value)
 
     products = query.all()
-    if not products:
-        error_message = 'There is no value matching your search criteria'
 
-    
+    # No products found for the given query
+    if not products:
+        error_message = 'There are no values matching your search criteria'
+
+    # Get classification level from environment
     classification_level = os.environ.get('CLASSIFICATION_LEVEL', 'Unclassified')
     return render_template('index.html', products=products, error_message=error_message, classification_level=classification_level)
-
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
